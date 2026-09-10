@@ -64,3 +64,5 @@ A ingestão dos dados seguiu os padrões da **Arquitetura Medalhão** no ambient
 
 ### 2.2. Execução no Databricks
 
+![Camada Bronze: Ingestão e Persistência](./imagens/CamadaBronze.png)
+
