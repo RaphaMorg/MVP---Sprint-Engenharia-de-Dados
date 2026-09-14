@@ -66,3 +66,62 @@ A ingestão dos dados seguiu os padrões da **Arquitetura Medalhão** no ambient
 
 ![Camada Bronze: Ingestão e Persistência](./imagens/CamadaBronze.png)
 
+### 2.3. Referência ao Script
+
+
+
+## 3. Modelagem e Catálogo de Dados (Etapa 4.3)
+
+### 3.1. Arquitetura Dimensional
+
+A camada Gold foi projetada no padrão **Esquema Estrela (Star Schema)**, separando o contexto em dimensões normalizadas e centralizando os fatos numéricos.
+
+* **"dim_localizacao":** Contém os atributos espaciais e cadastrais municipais (Logradouro, bairros e seus códigos cadastrais).
+* **"dim_tipologia":** Dimensão de classificação imobiliária, segmentando os tipos de uso, tipologia e tipo de transação de mercado.
+* **"dim_tempo":** Contém os anos e mêses de incidência da transação dos imóveis.
+* **"fato_transacoes":** Tabela central contendo chaves estrangeiras para as dimensões e métricas pré-computadas (Médias financeiras, metragem do imóvel, total de negócios, etc...).
+
+### 3.2. Catálogo de Dados
+
+#### Tabela Dimensão: "dim_localizacao"
+
+| Coluna | Descrição | Tipo de Dado | Domínio |   
+| :--- | :--- | :--- | :--- |
+| 'id_localizacao' | Chave Primária (PK) gerada monotonicamente (monotonically_increasing_id) para indexação dimensional | BigInt | Inteiros >= 0 |
+| 'codigo_logradouro' | Código do logradouro cadastrado no município do Rio de Janeiro (CL) | Integer (Número Inteiro) | Inteiros Positivos (>0) |
+| 'logradouro' | Nome oficial do logradouro em caixa alta | String (Texto) | Nomes válidos de vias públicas |
+| 'codigo_bairro' | Código do bairro cadastrado no município do Rio de Janeiro (CB) | String (Texto) | Códigos numéricos de 3 dígitos (ex: 001 a 160) |
+| 'bairro' | Nome oficial do bairro do Rio de Janeiro em caixa alta | String (Texto) | Bairros oficiais cadastrados do município do Rio de Janeiro |
+
+#### Tabela Dimensão: "dim_tipologia"
+
+| Coluna | Descrição | Tipo de Dado | Domínio |   
+| :--- | :--- | :--- | :--- |
+| 'id_tipologia' | Chave Primária (PK) gerada monotonicamente (monotonically_increasing_id) para indexação dimensional | BigInt | Inteiros >= 0 |
+| 'tipo_uso' | Finalidade de utilização do imóvel | String (Texto) | [RESIDENCIAL, NÃO RESIDENCIAL] |
+| 'tipologia_principal' | Classificação construtica do imóvel | String (Texto) | [APARTEMENTO, CASA, SALA, LOJA, PRÉDIO, GALPÃO, etc] |
+| 'transacao_mercado' | Natureza jurídica da transmissão imobiliária | String (Texto) | [COMPRA E VENDA, ALUGUEL, DOAÇÃO, etc] |
+
+#### Tabela Dimensão: "dim_tempo"
+
+| Coluna | Descrição | Tipo de Dado | Domínio |   
+| :--- | :--- | :--- | :--- |
+| 'id_tempo' | Chave Primária (PK) gerada monotonicamente (monotonically_increasing_id) para indexação dimensional | BigInt | Inteiros >= 0 |
+| 'ano' | Ano de registro da transação | Integer (Número Inteiro) | Anos >= 2000 |
+| 'mes' | Mês de registro da transação | Integer (Número Inteiro) | Mês entre 1 e 12 |
+
+#### Tabela Fato: "fato_transacoes"
+
+| Coluna | Descrição | Tipo de Dado | Domínio |   
+| :--- | :--- | :--- | :--- |
+| 'id_transacao' | Identificador analítico único da transação, Chave Primária (PK) | BigInt | Inteiros >= 0 |
+| 'id_localizacao' | Chave Estrangeira (FK) referenciando dim_localizacao.id_localizacao | BigInt | IDs presentes na dimensão localização |
+| 'id_tipologia' | Chave Estrangeira (FK) referenciando dim_tipologia.id_tipologia | BigInt | IDs presentes na dimensão tipologia |
+| 'id_tempo' | Chave Estrangeira (FK) referenciando dim_tempo.id_tempo | BigInt | IDs presentes na dimensão tempo |
+| 'total_transacoes' | Contagem consolidada de transações para o logradouro no período | Integer (Número Inteiro) | Inteiros >= 1 |
+| 'precentual_transferido_medio' | Percentual médio de propriedade transferido | Double (Decimal) | Valores contínuos de 0.0 a 100.0 |
+| 'area_construida_media' | Área construída média das unidades em metros quadrados (m²) | Double (Decimal) | Valores reais > 0.0 |
+| 'valor_transacao_medio' | Valor médio efetivo declarado da transação em Reais (BRL) | Double (Decimal) | Valores monetários > 0.0 |
+| 'valor_imovel_medio' | Valor venal/avaliado médio do imóvel apurado pela prefeitura em Reais (BRL) | Double (Decimal) | Valores monetários > 0.0 |
+
+### 3.3. Unity Catalog (DataBricks)
