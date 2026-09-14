@@ -151,6 +151,7 @@ O fluxo de engenharia de dados (ETL) foi projetado e orquestrado inteiramente de
 
 Assim como explicado no **Tópico 2 (Carga dos Dados)**, a camada Bronze fica responsável por armazenar os dados em seus **estados brutos**, **originais**, em formato Delta Lake, com a adição de metadados de auditoria ('ingestao' e 'arquivo').
 
+<a id="camada-silver></a>
 #### Etapa 2 - Camada Bronze $\rightarrow$ Camada Silver ('silver_imoveis')
 
 Na transição para a segunda camada da **Arquitetura Medalhão**, a **Camada Silver**, os dados em seu estado bruto (raw) foram submetidos a rotinas de validação de qualidade, tipagem e saneamento sintático: 
@@ -191,7 +192,14 @@ Após a persistência da tabela original na **Camada Bronze** e antes de realiza
 * **Completude:** Identificou-se que praticamente todas as colunas estão íntegras, com exceção de **4 registros nulos/vazios** concentrados no atributo **'média_valor_imóvel'** (menos de 0,004% da base).
 * **Consistência e Tipagem:** Constatou-se a necessidade de **conversão dos tipos primitivos** (de texto para inteiros e decimais com ponto), **padronização textual em maiúsculas** e **saneamento dos nomes das colunas**.
 
-Os problemas detectados com relação a completude e consistência e tipagem foram tratados na camada Silver, como mostrado na seção anterior **4. Pipeline de Dados, Tópico 4.1, Etapa 2**.
+Os problemas detectados com relação a completude e consistência e tipagem foram tratados na camada Silver, como mostrado na seção anterior [4. Pipeline de Dados, Tópico 4.1, Etapa 2](#camada-silver).
 
-#### Diagnóstico realizado
+#### 5.1. Diagnóstico realizado
 
+![Diagnóstico realizado sobre os dados crus (brutos)](./imagens/DiagnosticoRawData.png)
+
+### 5.2. Referência ao Script no Repositório
+
+
+
+## 6. Análise de Dados (Etapa 4.5)
