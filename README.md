@@ -151,8 +151,7 @@ O fluxo de engenharia de dados (ETL) foi projetado e orquestrado inteiramente de
 
 Assim como explicado no **Tópico 2 (Carga dos Dados)**, a camada Bronze fica responsável por armazenar os dados em seus **estados brutos**, **originais**, em formato Delta Lake, com a adição de metadados de auditoria ('ingestao' e 'arquivo').
 
-<a id="camada-silver></a>
-#### Etapa 2 - Camada Bronze $\rightarrow$ Camada Silver ('silver_imoveis')
+<h4 id="camada-silver">Etapa 2 - Camada Bronze $\rightarrow$ Camada Silver ('silver_imoveis')</h4>
 
 Na transição para a segunda camada da **Arquitetura Medalhão**, a **Camada Silver**, os dados em seu estado bruto (raw) foram submetidos a rotinas de validação de qualidade, tipagem e saneamento sintático: 
 * **Padronização Textual:** Foram utilizadas as funções **'upper()'** e **'trim()'** nos campos: "logradouro", "bairro", "uso", "tipologia", "principais_tipologias" e "principal_transação_mercado", padronizando variações de caixa alta e eliminando espaços.
