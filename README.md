@@ -125,3 +125,51 @@ A camada Gold foi projetada no padrão **Esquema Estrela (Star Schema)**, separa
 | 'valor_imovel_medio' | Valor venal/avaliado médio do imóvel apurado pela prefeitura em Reais (BRL) | Double (Decimal) | Valores monetários > 0.0 |
 
 ### 3.3. Unity Catalog (DataBricks)
+
+* **Visão Geral das Tabelas e Volumes**
+![Tabelas Unity Catalog](./imagens/UnityCatalogSchemaGeral.png)
+
+* **Dimensão Localização (dim_localizacao)**
+![Dimensão Localização](./imagens/dim_localizacao.png)
+
+* **Dimensão Tipologia (dim_tipologia)**
+![Dimensão Tipologia](./imagens/dim_tipologia.png)
+
+* **Dimensão Tempo (dim_tempo)**
+![Dimensão Tempo](./imagens/dim_tempo.png)
+
+* **Tabela Fato Transações (fato_transacoes)**
+![Tabela Fato Transações](./imagens/fato_transacoes.png)
+
+## 4. Pipeline de Dados (Etapa 4.4)
+
+### 4.1. Estrutura e Organização do Pipeline 
+
+O fluxo de engenharia de dados (ETL) foi projetado e orquestrado inteiramente de forma sequencial em um único **Notebook DataBricks**, aproveitando ao máximo a execução distribuída do Apache Spark e o Unity Catalog.
+
+#### Etapa 1 - Camada Bronze ('bronze_imoveis')
+
+Assim como explicado no **Tópico 2 (Carga dos Dados)**, a camada Bronze fica responsável por armazenar os dados em seus **estados brutos**, **originais**, em formato Delta Lake, com a adição de metadados de auditoria ('ingestao' e 'arquivo').
+
+#### Etapa 2 - Camada Bronze $\rightarrow$ Camada Silver ('silver_imoveis')
+
+Na transição para a segunda camada da **Arquitetura Medalhão**, a **Camada Silver**, os dados em seu estado bruto (raw) foram submetidos a rotinas de validação de qualidade, tipagem e saneamento sintático: 
+* **Padronização Textual:** Foram utilizadas as funções **'upper()'** e **'trim()'** nos campos: "logradouro", "bairro", "uso", "tipologia", "principais_tipologias" e "principal_transação_mercado", padronizando variações de caixa alta e eliminando espaços.
+* **Tipagem dos Dados:** Conversão do tipo de dado de colunas ingeridas originalmente como texto (string) para seus tipos primitivos:
+  * 'cl' $\rightarrow$ 'Integer (Inteiro)'
+  * 'ano_transação' e 'mês_transação' $\rightarrow$ 'Integer (Inteiro)'
+  * 'total_transações' $\rightarrow$ 'Integer (Inteiro)'
+  * 'média_percentual_transferido', 'média_área_construída', 'média_valor_transação' e 'média_valor_imóvel' $\rightarrow$ 'Double (Decimal)'
+* **Renomeação Semântica:** Foram renomeados todos os atributos, removendo acentos e caracteres especiais existentes na base de dados original.
+* **Tratamento de Valores Nulos:** Realização de uma análise diagnóstica e **descarte de 4 registros encontrados com valores nulos na coluna "média_valor_imóvel"**.
+
+#### Etapa 3 - Camada Silver $\rightarrow$ Camada Gold (Modelagem Dimensional - Dimensões e Tabela Fato)
+
+A camada Gold foi desnormalizada a partir do Dataframe tratado da camada Silver, criando assim as dimensões "dim_localizacao", "dim_tipologia" e "dim_tempo" e a tabela fato "fato_transacoes":
+* Nas dimensões houve a seleção de atributos específicos para cada subconjunto, assim como a eliminação de duplicidades ('distinct()') e a criação de chaves primárias artificiais através do comando 'monotonically_increasing_id()'.
+* Já na tabela fato foi executada uma junção (JOIN) entre o conjunto transacional da camada Silver (atributos não distribuidos entre as dimensões) e as três dimensões criadas, tendo uma tabela fato com as chaves estrangeiras (FKs) e as métricas transacionais.
+
+### 4.2. Persistência no Lakehouse (Delta Lake)
+
+Todas as tabelas foram persistidas 
+
