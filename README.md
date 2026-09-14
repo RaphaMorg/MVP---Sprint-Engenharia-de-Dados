@@ -163,13 +163,35 @@ Na transição para a segunda camada da **Arquitetura Medalhão**, a **Camada Si
 * **Renomeação Semântica:** Foram renomeados todos os atributos, removendo acentos e caracteres especiais existentes na base de dados original.
 * **Tratamento de Valores Nulos:** Realização de uma análise diagnóstica e **descarte de 4 registros encontrados com valores nulos na coluna "média_valor_imóvel"**.
 
+![Camada Silver](./imagens/CamadaSilver.png)
+![Camada Silver Display](./imagens/DisplayCamadaSilver.png)
+
 #### Etapa 3 - Camada Silver $\rightarrow$ Camada Gold (Modelagem Dimensional - Dimensões e Tabela Fato)
 
 A camada Gold foi desnormalizada a partir do Dataframe tratado da camada Silver, criando assim as dimensões "dim_localizacao", "dim_tipologia" e "dim_tempo" e a tabela fato "fato_transacoes":
 * Nas dimensões houve a seleção de atributos específicos para cada subconjunto, assim como a eliminação de duplicidades ('distinct()') e a criação de chaves primárias artificiais através do comando 'monotonically_increasing_id()'.
 * Já na tabela fato foi executada uma junção (JOIN) entre o conjunto transacional da camada Silver (atributos não distribuidos entre as dimensões) e as três dimensões criadas, tendo uma tabela fato com as chaves estrangeiras (FKs) e as métricas transacionais.
 
+![Camada Gold](./imagens/CamadaGold.png)
+![Camada Gold Display](./imagens/DisplayCamadaGold.png)
+
 ### 4.2. Persistência no Lakehouse (Delta Lake)
 
-Todas as tabelas foram persistidas 
+Todas as tabelas foram persistidas em formato **Delta Lake**, assegurando garantias ACID e alta performance de consulta no Unity Catalog.
+
+![Tabelas Persistidas](./imagens/UnityCatalogSchemaGeral.png)
+
+### 4.3. Referência ao Script no Repositório
+
+
+## 5. Qualidade de Dados (Etapa 4.5)
+
+Após a persistência da tabela original na **Camada Bronze** e antes de realizar o processo de limpeza e transformação na **Camada Silver**, foi executada uma etapa de diagnóstico para avaliar a qualidade dos dados brutos, tendo como objetivo auditar a **Unicidade**, **Completude** e **Consistência e Tipagem**. Com isso em mente teve-se o seguinte relatório:
+* **Unicidade:** O atributo identificador 'objectid' possui **97.467 registros únicos para um total de 97.467 linhas**, confirmando zero duplicatas de chave primária. 
+* **Completude:** Identificou-se que praticamente todas as colunas estão íntegras, com exceção de **4 registros nulos/vazios** concentrados no atributo **'média_valor_imóvel'** (menos de 0,004% da base).
+* **Consistência e Tipagem:** Constatou-se a necessidade de **conversão dos tipos primitivos** (de texto para inteiros e decimais com ponto), **padronização textual em maiúsculas** e **saneamento dos nomes das colunas**.
+
+Os problemas detectados com relação a completude e consistência e tipagem foram tratados na camada Silver, como mostrado na seção anterior **4. Pipeline de Dados, Tópico 4.1, Etapa 2**.
+
+#### Diagnóstico realizado
 
