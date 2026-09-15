@@ -67,7 +67,7 @@ A ingestão dos dados seguiu os padrões da **Arquitetura Medalhão** no ambient
 ![Camada Bronze: Ingestão e Persistência](./imagens/CamadaBronze.png)
 
 #### Referência ao Script
-
+> **Código-fonte:** A rotina de ingestão e criação da tabela Delta na camada Bronze pode ser conferida na segunda célula de código do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
 
 
 ## 3. Modelagem e Catálogo de Dados (Etapa 4.3)
@@ -141,6 +141,9 @@ A camada Gold foi projetada no padrão **Esquema Estrela (Star Schema)**, separa
 * **Tabela Fato Transações (fato_transacoes)**
 ![Tabela Fato Transações](./imagens/fato_transacoes.png)
 
+#### Referência ao Script
+> **Código-fonte:** A criação do esquema estrela (dimensões e tabela fato) está documentada na sexta célula de código do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
+
 ## 4. Pipeline de Dados (Etapa 4.4)
 
 ### 4.1. Estrutura e Organização do Pipeline 
@@ -182,7 +185,7 @@ Todas as tabelas foram persistidas em formato **Delta Lake**, assegurando garant
 ![Tabelas Persistidas](./imagens/UnityCatalogSchemaGeral.png)
 
 #### Referência ao Script
-
+> **Código-fonte:** A criação do esquema estrela (dimensões e tabela fato) e persistência destas está documentada na sexta célula de código do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
 
 ## 5. Qualidade de Dados (Etapa 4.5)
 
@@ -198,7 +201,7 @@ Os problemas detectados com relação a completude e consistência e tipagem for
 ![Diagnóstico realizado sobre os dados crus (brutos)](./imagens/DiagnosticoRawData.png)
 
 #### Referência ao Script
-
+> **Código-fonte:** O diagnóstico realizado pode ser encontrado na quarta célula de código no notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb#1-camada-bronze-ingestão-e-persistência-dos-dados-brutos).
 
 
 ## 6. Análise de Dados (Etapa 4.5)
@@ -217,6 +220,7 @@ Ademais, observa-se que bairros consolidades e mais tradicionais como **Copacaba
 O bairro do **Centro** também consta no ranking, o que pode indicar que boa parte do mercado imobiliário inclui o polo comercial/corporativo.
 
 #### Referência ao Script
+> **Código-fonte:** Esta consulta analítica pode ser executada na célula de código 8 do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
 
 ### 6.2. Pergunta 2 - **Quais são os 10 bairros com o valor médio de transação imobiliária mais elevado?**
 
@@ -228,6 +232,7 @@ Os bairros da **Zona Sul** dominam expressivamente o ranking de valorização. O
 É interessante pontuar que o bairro da **Barra da Tijuca** também aparece nesse ranking, ocupando a 8ª posição, com valor médio de R$ 1.124.597,00, destacando-se como único bairro que combina valor de transação elevado com volume transacional expressivo (46,5 mil), enquanto os bairros da Zona Sul mantém volumes expressivamente mais restritos - sendo **Ipanema** o mais próximo, com aproximadamente 9 mil transações. 
 
 #### Referência ao Script
+> **Código-fonte:** Esta consulta analítica pode ser executada na célula de código 9 do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
 
 ### 6.3. Pergunta 3 - **Como o volume e o montante financeiro das transações imobiliárias evoluíram historicamente ano a ano no Rio de Janeiro?**
 
@@ -242,6 +247,7 @@ A análise histórica da séria temporal (2011 - 2025) revela ciclos econômicos
 * **2021 - 2025:** Em 2021, é notável um forte repique no **volume transacional com 31.265 transações**, estimulado pelo período de taxas de juros historicamente baixas no país. De 2022 em diante, o mercado imobiliário consolidou uma constante expansão, onde o volume subiu progressivamente ano a ano de **25.777 para 29.228 (2025)**, acompanhado por um novo nível de valorização do tíquete médio, que encerrou **2025 com R$ 725.101,92**.
 
 #### Referência ao Script
+> **Código-fonte:** Esta consulta analítica pode ser executada na célula de código 10 do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
 
 ### 6.4. Pergunta 4 - Qual tipologia construtiva (Apartamento, Casa, Loja) e finalidade de uso (Residencial vs. Comercial) dominam o mercado imobiliário carioca?
 
@@ -256,6 +262,7 @@ Quando comparamos a tipologia **Casa (Residencial)** com **Apartamento (Residenc
 Ademais, temos que o segmento **não residencial** possui forte representatividade, liderado por **Salas Comerciais**, que acumulam **47.799 transações**, sendo o segundo maior no total de transações imobiliárias no município, com tíquete médio de **R$ 338.897,34** para uma área média de **130,16 m²**, operando com um custo por metro quadrado acessível (**~R$ 2.603/m²**). Em contrapartida, observa-se que as **Lojas de Shopping** concentram o maior valor financeiro de todos os segmentos, com valor médio transacional de **R$ 1.145.148,72** para uma área média de **299,42 m²**.
 
 #### Referência ao Script
+> **Código-fonte:** Esta consulta analítica pode ser executada na célula de código 11 do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
 
 ### 6.5. Pergunta 5 - Qual é o valor médio transacionado de apartamentos residenciais nos bairros que concentram o maior volume de vendas dessa categoria?
 
@@ -269,6 +276,7 @@ Outros bairros da Zona Oeste, como **Freguesia (Jacarepaguá)** (12.801 transaç
 Por outro lado, os bairros tradicionais da **Zona Sul** presentes no top 10 - **Copacabana** (26.709 transações e valor médio de **R$888.378,86**), **Botafogo** (12.782 transações e **R$ 943.748,74**) e **Flamengo** (8.879 transações e **R$ 872.212,07**) - apresentam valores expressivamente maior que os demais, explicado pela alta valorização patrimonial e consolidação histórica da região.
 
 #### Referência ao Script
+> **Código-fonte:** Esta consulta analítica pode ser executada na célula de código 12 do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
 
 ## 7. Autoavaliação
 
