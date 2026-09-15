@@ -66,7 +66,7 @@ A ingestão dos dados seguiu os padrões da **Arquitetura Medalhão** no ambient
 
 ![Camada Bronze: Ingestão e Persistência](./imagens/CamadaBronze.png)
 
-### 2.3. Referência ao Script
+#### Referência ao Script
 
 
 
@@ -181,7 +181,7 @@ Todas as tabelas foram persistidas em formato **Delta Lake**, assegurando garant
 
 ![Tabelas Persistidas](./imagens/UnityCatalogSchemaGeral.png)
 
-### 4.3. Referência ao Script no Repositório
+#### Referência ao Script
 
 
 ## 5. Qualidade de Dados (Etapa 4.5)
@@ -197,7 +197,7 @@ Os problemas detectados com relação a completude e consistência e tipagem for
 
 ![Diagnóstico realizado sobre os dados crus (brutos)](./imagens/DiagnosticoRawData.png)
 
-### 5.2. Referência ao Script no Repositório
+#### Referência ao Script
 
 
 
@@ -272,7 +272,16 @@ Por outro lado, os bairros tradicionais da **Zona Sul** presentes no top 10 - **
 
 ## 7. Autoavaliação
 
+Ao concluir o projeto respondendo as perguntas formuladas na primeira etapa, foi possível alcançar todos os objetivos técnicos e analíticos:
 
+* **Desenvolvimento da Arquitetura Medalhão:** Foi implementada, de maneira totalmente funcional, a separação estrita entre as camadas **Bronze** (dados brutos e rastreabilidade), **Silver** (saneamento, tratamento e tipagem dos dados e atributos) e **Gold** (modelagem dimensional analítica para consumo).
+* **Governança via Unity Catalog:** Todas as tabelas foram organizadas sob um catálogo estruturado, persistidas em um Delta Lake e totalmente documentadas.
+* **Diagnóstico e Qualidade dos Dados:** Foi conduzida uma etapa diagnóstica antes da camada de limpeza Silver, onde foi possível identificar valores ausentes, caracteres incompatíveis e problemas de integridade relacional, que posteriormente foram tratados.
+* **Modelagem Dimensional e Suporte a Negócio:** Estruturou-se um *Esquema Estrela* com uma tabela fato com 97.463 registros e 3 dimensões, importantíssima para responder às 5 perguntas estratégicas formuladas.
 
+Em relação aos problemas e dificuldades encontradas, pode-se citar os mesmos descritos acima na etapa de Diagnóstico, com a inconsistência dos dados de origem, visto que a base de dados original utilizava formatação brasileira (vírgulas decimais), acentos e um dos atributos com dados nulos ou ausentes. Tais pontos foram devidamente saneados na camada Silver, onde foi realizado o saneamento e tratamento dos dados.
 
-
+A fim de enriquecer o projeto futuramente, algumas iniciativas se tornam interessantes, tais quais:
+* Conectar as tabelas criadas na camada Gold (Tabela fato e dimensões) a ferramentas analíticas como Power BI, para a construção de dashboards interativos.
+* Enriquecer a base com dados externos, tais como bases georreferenciadas (estações de metrô, índices de segurança pública, etc...) para modelar ánalises preditivas de precificação de imóveis através de ML (Machine Learning).
+* Adaptar a camada Bronze para leitura contínua e orientada a eventos (cloudFiles), processando novos arquivos de transmissão de ITBI de forma incremental sem necessidade de reprocessamento em lote (*batch overwrite*).
