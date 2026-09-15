@@ -203,4 +203,76 @@ Os problemas detectados com relação a completude e consistência e tipagem for
 
 ## 6. Análise de Dados (Etapa 4.5)
 
-Com a Arquitetura Medalhão toda projetada, a camada Gold consolidada em Star Schema, foram realizadas consultas analíticas na linguagem SQL para responder as perguntas formuladas no início do projeto na [etapa 1](#Perguntas)
+Com a Arquitetura Medalhão projetada por completo e a camada Gold consolidada em arquitetura dimensional (Esquema Estrela), foram realizadas consultas analíticas na linguagem SQL para responder as perguntas formuladas no início do projeto na [etapa 1](#Perguntas).
+
+### 6.1. Pergunta 1 - **Quais são os 10 bairros com maior volume de transações registradas no município do Rio de Janeiro?**
+
+![Consulta Q1](./imagens/Q1.png)
+![Resultado Q1](./imagens/Q1grafico.png)
+
+A partir da consulta realizada, foi possível extrair conclusões consistentes sobre a dinâmica imobiliária do município. Foi identificado que o bairro da **Barra da Tijuca** lidera de forma isolada, acumulando mais de 45 mil transações registradas, sendo seguido por **Recreio dos Bandeirantes** e **Jacarepaguá**, formando assim o top 3. Além dos 3 citados, bairros como **Freguesia (Jacarepaguá)**, **Campo Grande** e **Taquara** também entram entre os 10 bairros com maior volume transacional no Rio de Janeiro, evidenciando liderança absoluta da **Zona Oeste** da cidade. 
+
+Ademais, observa-se que bairros consolidades e mais tradicionais como **Copacabana** (~29 mil), **Tijuca** (~21 mil) e **Botafogo** (~14 mil) também se destacam ficando entre os top 10 maiores polos, refletindo assim um mercado secundário contínuo e resiliente.
+
+O bairro do **Centro** também consta no ranking, o que pode indicar que boa parte do mercado imobiliário inclui o polo comercial/corporativo.
+
+#### Referência ao Script
+
+### 6.2. Pergunta 2 - **Quais são os 10 bairros com o valor médio de transação imobiliária mais elevado?**
+
+![Consulta Q2](./imagens/Q2.png)
+![Resultado Q2](./imagens/Q2grafico.png)
+
+Os bairros da **Zona Sul** dominam expressivamente o ranking de valorização. O **Leblon** desponta na primeira posição com o valor transacional médio mais alto da cidade (R$ 2.479.579,34), seguido por **Ipanema** (R$2.250.219,94) e **Lagoa** (R$ 2.102.296,83). Completam a lista **São Conrado** (R$ 1,84M), **Gávea** (R$ 1,43M), **Jardim Botânico** (R$ 1,40M), **Urca** (R$ 1,25M), **Leme** (R$ 1,04M) e **Cosme Velho** (R$ ~1M), demonstrando a hegemonia e o alto poder aquisitivo dessa região da cidade.
+
+É interessante pontuar que o bairro da **Barra da Tijuca** também aparece nesse ranking, ocupando a 8ª posição, com valor médio de R$ 1.124.597,00, destacando-se como único bairro que combina valor de transação elevado com volume transacional expressivo (46,5 mil), enquanto os bairros da Zona Sul mantém volumes expressivamente mais restritos - sendo **Ipanema** o mais próximo, com aproximadamente 9 mil transações. 
+
+#### Referência ao Script
+
+### 6.3. Pergunta 3 - **Como o volume e o montante financeiro das transações imobiliárias evoluíram historicamente ano a ano no Rio de Janeiro?**
+
+![Consulta Q3](./imagens/Q3.png)
+![Gráfico Volume Transacional x Ano](./imagens/Q3VolxAno.png)
+![Gráfico Ticket Médio x Ano](./imagens/Q3TicketxAno.png)
+
+A análise histórica da séria temporal (2011 - 2025) revela ciclos econômicos bem definidos no mercado imobiliário carioca, com dinâmicas contrastantes entre volume e tíquete médio.
+
+* **2011 - 2016:** No início da série estão presentes os maiores volumes transacionais da década, sendo o ápice, **38.035 transações em 2011**. Nos anos posteriores, observou-se uma **desaceleração progressiva na quantidade de negócios**, caindo para **21.171 em 2016**, enquanto o **tíquete médio anual dobrou**, saltando de **R$ 353.110,05 (2011)** para o pico histórico de **R$ 750.770,94 (2016)**. Esses valores refletem uma valorização patrimonial expressiva, que pode ser explicada por altos investimentos urbanos e grandes eventos na cidade.
+* **2017 - 2020:** Entre 2017 e 2020, o mercado enfrentou uma **contração tanto em liquidez quanto em valores médios**, atingindo o **menor volume da série em 2018 (18.758 transações)** e uma **correção no tíquete médio para valores próximos a R$ 610 mil - R$ 639 mil**.
+* **2021 - 2025:** Em 2021, é notável um forte repique no **volume transacional com 31.265 transações**, estimulado pelo período de taxas de juros historicamente baixas no país. De 2022 em diante, o mercado imobiliário consolidou uma constante expansão, onde o volume subiu progressivamente ano a ano de **25.777 para 29.228 (2025)**, acompanhado por um novo nível de valorização do tíquete médio, que encerrou **2025 com R$ 725.101,92**.
+
+#### Referência ao Script
+
+### 6.4. Pergunta 4 - Qual tipologia construtiva (Apartamento, Casa, Loja) e finalidade de uso (Residencial vs. Comercial) dominam o mercado imobiliário carioca?
+
+![Consulta Q4](./imagens/Q4.png)
+![Gráfico Tipologia do imóvel x Total de Transações](./imagens/Q4TipoxTotal.png)
+![Gráfico Tipo de uso do imóvel x Total de Transações](./imagens/Q4UsoxTotal.png)
+
+Por meio da consulta realizada, pode-se concluir que a tipologia e tipo de uso **Apartamento (Residencial)** domina o mercado com **338.653 transações** registradas, representando a maioria das operações imobiliárias na cidade. Esse padrão reflete um processo consolidado de verticalização urbana, acompanhado pelo crescimento demográfico, na capital, apresentando área média de **87,02 m²** e tíquete médio de **R$ 669.549,61**.
+
+Quando comparamos a tipologia **Casa (Residencial)** com **Apartamento (Residencial)**, temos que a primeira ocupa a terceira posição geral com **22.141 transações**. Embora as casas tenham mais que o dobro da metragem média dos apartamentos (**205,09 m² contra 87,02 m²**), o seu tíquete médio geral (**R$ 466.773,51**) e o valor por metro quadrado (**~R$ 2.275/m²**) são muito inferiores aos dos apartamentos (**~R$ 7.694/m²**). Desta maneira, comprova-se que a maior parte da liquidez de casas está concentrada em bairros da Zona Norte e Zona Oeste de menor valor venal por metro quadrado, enquanto os apartamentos se concentram em regiões verticalizadas de maior valor agregado como os bairros da Zona Sul e Barra da Tijuca.
+
+Ademais, temos que o segmento **não residencial** possui forte representatividade, liderado por **Salas Comerciais**, que acumulam **47.799 transações**, sendo o segundo maior no total de transações imobiliárias no município, com tíquete médio de **R$ 338.897,34** para uma área média de **130,16 m²**, operando com um custo por metro quadrado acessível (**~R$ 2.603/m²**). Em contrapartida, observa-se que as **Lojas de Shopping** concentram o maior valor financeiro de todos os segmentos, com valor médio transacional de **R$ 1.145.148,72** para uma área média de **299,42 m²**.
+
+#### Referência ao Script
+
+### 6.5. Pergunta 5 - Qual é o valor médio transacionado de apartamentos residenciais nos bairros que concentram o maior volume de vendas dessa categoria?
+
+![Consulta Q5](./imagens/Q5.png)
+![Gráfico Valor Médio dos Apartamentos Residenciais x Bairro](./imagens/Q5grafico.png)
+
+A partir da análise, observa-se que os bairros da **Zona Oeste** lideram expressivamente o volume absoluto de vendas de apartamentos residenciais. O topo do ranking é composto por **Barra da Tijuca** (32.911 transações), **Recreio dos Bandeirantes** (29.874) e **Jacarepaguá** (29.745), que somados ultrapassam 92 mil transações dessa tipologia. Contudo, há uma **disparidade financeira** evidente entre eles: enquanto a Barra atinge um valor médio de **R$ 1.147.805,87**, Recreio e Jacarepaguá atendem faixas mais intermediárias de mercado, registrando valores médios de **R$ 647.696,41** e **R$ 463.046,50**, respectivamente.
+
+Outros bairros da Zona Oeste, como **Freguesia (Jacarepaguá)** (12.801 transações e **R$ 415.364,06**), **Taquara** (9.788 transações e **R$ 250.695,03**) e **Pechincha** (8.461 transações e **R$ 274.474,09**), além da **Tijuca** na Zona Norte (18.818 transações e **R$ 551.695,99**), apresentam volumes transacionais e valores médios mais contidos quando comparados ao topo da lista. Esses bairros atendem à demanda residencial de perfil intermediário e mais acessível da capital. 
+
+Por outro lado, os bairros tradicionais da **Zona Sul** presentes no top 10 - **Copacabana** (26.709 transações e valor médio de **R$888.378,86**), **Botafogo** (12.782 transações e **R$ 943.748,74**) e **Flamengo** (8.879 transações e **R$ 872.212,07**) - apresentam valores expressivamente maior que os demais, explicado pela alta valorização patrimonial e consolidação histórica da região.
+
+#### Referência ao Script
+
+## 7. Autoavaliação
+
+
+
+
+
