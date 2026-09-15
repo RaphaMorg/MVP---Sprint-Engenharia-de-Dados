@@ -12,7 +12,7 @@ O mercado imobiliário do Rio de Janeiro movimenta bilhões de reais anualmente,
 
 O processamento desses dados nos permite compreender o dinamismo econômico urbano, mapear oscilações de valores de mercado, fornecer informações analíticas importantes para auxiliar na tomada de decisões corporativas e governamentais, entre outros.
 
-### 1.1. Perguntas de Negócio
+<h3 id="Perguntas">1.1. Perguntas de Negócio</h3>
 
 Para guiar o andamento do projeto e auxiliar na modelagem dimensional, foram formuladas 5 perguntas de negócio: 
 
@@ -202,3 +202,5 @@ Os problemas detectados com relação a completude e consistência e tipagem for
 
 
 ## 6. Análise de Dados (Etapa 4.5)
+
+Com a Arquitetura Medalhão toda projetada, a camada Gold consolidada em Star Schema, foram realizadas consultas analíticas na linguagem SQL para responder as perguntas formuladas no início do projeto na [etapa 1](#Perguntas)
