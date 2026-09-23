@@ -4,7 +4,7 @@
 **Matrícula:** 4052026001014  
 **Link para a base de dados utilizada:** https://datariov2-pcrj.hub.arcgis.com/datasets/PCRJ::itbi-transa%C3%A7%C3%B5es-por-logradouro-e-m%C3%AAs-im%C3%B3veis-residenciais-e-n%C3%A3o-residenciais/about
 
-O presente projeto apresenta uma pipeline de dados ponta a ponta construído com base na arquitetura Medalhão, desenvolvida na ferramenta Databricks, utilizando PySpark, Delta Lake e Unity Catalog. O projeto trata desde a ingestão dos dados à análise dos mesmos, que representam transações imobiliárias reais do município do Rio de Janeiro desde 2010, disponibilizados pela própria prefeitura do Rio de Janeiro.
+O presente projeto apresenta um pipeline de dados ponta a ponta construído com base na arquitetura Medalhão, desenvolvida na ferramenta Databricks, utilizando PySpark, Delta Lake e Unity Catalog. O projeto trata desde a ingestão dos dados à análise dos mesmos, que representam transações imobiliárias reais do município do Rio de Janeiro desde 2010, disponibilizados pela própria prefeitura do Rio de Janeiro.
 
 ## 1. Contexto de Negócio e Perguntas (Etapa 2 e 4.1)
 
@@ -59,7 +59,7 @@ A ingestão dos dados seguiu os padrões da **Arquitetura Medalhão** no ambient
 2. O dataset bruto foi carregado em um DataFrame Spark com inferência de cabeçalho ('header=True') e inferência automática de esquema desativada ('inferSchema=False') evitando custos de processamento de leitura desnecessários.
 3. Foram injetadas duas colunas para auditoria:
    * **"ingestao"**: Garante rastreabilidade temporal, armazenando data e hora através da função ('current_timestamp()') na qual o registro ocorreu.
-   * **"arquivo"**: Assegura a rastreabilidade da fonte, registrando a origem física do dado bruto ('lit("ITBI_Transacoes_Logradouro_Mes.csv")'.
+   * **"arquivo"**: Assegura a rastreabilidade da fonte, registrando a origem física do dado bruto ('lit("ITBI_Transacoes_Logradouro_Mes.csv")').
 4. Por último os dados foram gravados como tabela no formato **Delta** (format("delta")), com o nome **"bronze_imoveis"**, em modo idempotente (mode("overwrite")), preservando o histórico para reprodutibilidade.
 
 ### 2.2. Execução no Databricks
@@ -78,7 +78,7 @@ A camada Gold foi projetada no padrão **Esquema Estrela (Star Schema)**, separa
 
 * **"dim_localizacao":** Contém os atributos espaciais e cadastrais municipais (Logradouro, bairros e seus códigos cadastrais).
 * **"dim_tipologia":** Dimensão de classificação imobiliária, segmentando os tipos de uso, tipologia e tipo de transação de mercado.
-* **"dim_tempo":** Contém os anos e mêses de incidência da transação dos imóveis.
+* **"dim_tempo":** Contém os anos e meses de incidência da transação dos imóveis.
 * **"fato_transacoes":** Tabela central contendo chaves estrangeiras para as dimensões e métricas pré-computadas (Médias financeiras, metragem do imóvel, total de negócios, etc...).
 
 ### 3.2. Catálogo de Dados
@@ -99,7 +99,7 @@ A camada Gold foi projetada no padrão **Esquema Estrela (Star Schema)**, separa
 | :--- | :--- | :--- | :--- |
 | 'id_tipologia' | Chave Primária (PK) gerada monotonicamente (monotonically_increasing_id) para indexação dimensional | BigInt | Inteiros >= 0 |
 | 'tipo_uso' | Finalidade de utilização do imóvel | String (Texto) | [RESIDENCIAL, NÃO RESIDENCIAL] |
-| 'tipologia_principal' | Classificação construtica do imóvel | String (Texto) | [APARTEMENTO, CASA, SALA, LOJA, PRÉDIO, GALPÃO, etc] |
+| 'tipologia_principal' | Classificação construtiva do imóvel | String (Texto) | [APARTAMENTO, CASA, SALA, LOJA, PRÉDIO, GALPÃO, etc] |
 | 'transacao_mercado' | Natureza jurídica da transmissão imobiliária | String (Texto) | [COMPRA E VENDA, ALUGUEL, DOAÇÃO, etc] |
 
 #### Tabela Dimensão: "dim_tempo"
@@ -119,7 +119,7 @@ A camada Gold foi projetada no padrão **Esquema Estrela (Star Schema)**, separa
 | 'id_tipologia' | Chave Estrangeira (FK) referenciando dim_tipologia.id_tipologia | BigInt | IDs presentes na dimensão tipologia |
 | 'id_tempo' | Chave Estrangeira (FK) referenciando dim_tempo.id_tempo | BigInt | IDs presentes na dimensão tempo |
 | 'total_transacoes' | Contagem consolidada de transações para o logradouro no período | Integer (Número Inteiro) | Inteiros >= 1 |
-| 'precentual_transferido_medio' | Percentual médio de propriedade transferido | Double (Decimal) | Valores contínuos de 0.0 a 100.0 |
+| 'percentual_transferido_medio' | Percentual médio de propriedade transferido | Double (Decimal) | Valores contínuos de 0.0 a 100.0 |
 | 'area_construida_media' | Área construída média das unidades em metros quadrados (m²) | Double (Decimal) | Valores reais > 0.0 |
 | 'valor_transacao_medio' | Valor médio efetivo declarado da transação em Reais (BRL) | Double (Decimal) | Valores monetários > 0.0 |
 | 'valor_imovel_medio' | Valor venal/avaliado médio do imóvel apurado pela prefeitura em Reais (BRL) | Double (Decimal) | Valores monetários > 0.0 |
@@ -173,7 +173,7 @@ Na transição para a segunda camada da **Arquitetura Medalhão**, a **Camada Si
 
 A camada Gold foi desnormalizada a partir do Dataframe tratado da camada Silver, criando assim as dimensões "dim_localizacao", "dim_tipologia" e "dim_tempo" e a tabela fato "fato_transacoes":
 * Nas dimensões houve a seleção de atributos específicos para cada subconjunto, assim como a eliminação de duplicidades ('distinct()') e a criação de chaves primárias artificiais através do comando 'monotonically_increasing_id()'.
-* Já na tabela fato foi executada uma junção (JOIN) entre o conjunto transacional da camada Silver (atributos não distribuidos entre as dimensões) e as três dimensões criadas, tendo uma tabela fato com as chaves estrangeiras (FKs) e as métricas transacionais.
+* Já na tabela fato foi executada uma junção (JOIN) entre o conjunto transacional da camada Silver (atributos não distribuídos entre as dimensões) e as três dimensões criadas, tendo uma tabela fato com as chaves estrangeiras (FKs) e as métricas transacionais.
 
 ![Camada Gold](./imagens/CamadaGold.png)
 ![Camada Gold Display](./imagens/DisplayCamadaGold.png)
@@ -194,7 +194,7 @@ Após a persistência da tabela original na **Camada Bronze** e antes de realiza
 * **Completude:** Identificou-se que praticamente todas as colunas estão íntegras, com exceção de **4 registros nulos/vazios** concentrados no atributo **'média_valor_imóvel'** (menos de 0,004% da base).
 * **Consistência e Tipagem:** Constatou-se a necessidade de **conversão dos tipos primitivos** (de texto para inteiros e decimais com ponto), **padronização textual em maiúsculas** e **saneamento dos nomes das colunas**.
 
-Os problemas detectados com relação a completude e consistência e tipagem foram tratados na camada Silver, como mostrado na seção anterior [4. Pipeline de Dados, Tópico 4.1, Etapa 2](#camada-silver).
+Os problemas detectados com relação à completude, consistência e tipagem foram tratados na camada Silver, como mostrado na seção anterior [4. Pipeline de Dados, Tópico 4.1, Etapa 2](#camada-silver).
 
 #### 5.1. Diagnóstico realizado
 
@@ -215,7 +215,7 @@ Com a Arquitetura Medalhão projetada por completo e a camada Gold consolidada e
 
 A partir da consulta realizada, foi possível extrair conclusões consistentes sobre a dinâmica imobiliária do município. Foi identificado que o bairro da **Barra da Tijuca** lidera de forma isolada, acumulando mais de 45 mil transações registradas, sendo seguido por **Recreio dos Bandeirantes** e **Jacarepaguá**, formando assim o top 3. Além dos 3 citados, bairros como **Freguesia (Jacarepaguá)**, **Campo Grande** e **Taquara** também entram entre os 10 bairros com maior volume transacional no Rio de Janeiro, evidenciando liderança absoluta da **Zona Oeste** da cidade. 
 
-Ademais, observa-se que bairros consolidades e mais tradicionais como **Copacabana** (~29 mil), **Tijuca** (~21 mil) e **Botafogo** (~14 mil) também se destacam ficando entre os top 10 maiores polos, refletindo assim um mercado secundário contínuo e resiliente.
+Ademais, observa-se que bairros consolidados e mais tradicionais como **Copacabana** (~29 mil), **Tijuca** (~21 mil) e **Botafogo** (~14 mil) também se destacam ficando entre os top 10 maiores polos, refletindo assim um mercado secundário contínuo e resiliente.
 
 O bairro do **Centro** também consta no ranking, o que pode indicar que boa parte do mercado imobiliário inclui o polo comercial/corporativo.
 
@@ -229,7 +229,7 @@ O bairro do **Centro** também consta no ranking, o que pode indicar que boa par
 
 Os bairros da **Zona Sul** dominam expressivamente o ranking de valorização. O **Leblon** desponta na primeira posição com o valor transacional médio mais alto da cidade (R$ 2.479.579,34), seguido por **Ipanema** (R$2.250.219,94) e **Lagoa** (R$ 2.102.296,83). Completam a lista **São Conrado** (R$ 1,84M), **Gávea** (R$ 1,43M), **Jardim Botânico** (R$ 1,40M), **Urca** (R$ 1,25M), **Leme** (R$ 1,04M) e **Cosme Velho** (R$ ~1M), demonstrando a hegemonia e o alto poder aquisitivo dessa região da cidade.
 
-É interessante pontuar que o bairro da **Barra da Tijuca** também aparece nesse ranking, ocupando a 8ª posição, com valor médio de R$ 1.124.597,00, destacando-se como único bairro que combina valor de transação elevado com volume transacional expressivo (46,5 mil), enquanto os bairros da Zona Sul mantém volumes expressivamente mais restritos - sendo **Ipanema** o mais próximo, com aproximadamente 9 mil transações. 
+É interessante pontuar que o bairro da **Barra da Tijuca** também aparece nesse ranking, ocupando a 8ª posição, com valor médio de R$ 1.124.597,00, destacando-se como único bairro que combina valor de transação elevado com volume transacional expressivo (46,5 mil), enquanto os bairros da Zona Sul mantêm volumes expressivamente mais restritos - sendo **Ipanema** o mais próximo, com aproximadamente 9 mil transações. 
 
 #### Referência ao Script
 > **Código-fonte:** Esta consulta analítica pode ser executada na célula de código 9 do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
@@ -240,7 +240,7 @@ Os bairros da **Zona Sul** dominam expressivamente o ranking de valorização. O
 ![Gráfico Volume Transacional x Ano](./imagens/Q3VolxAno.png)
 ![Gráfico Ticket Médio x Ano](./imagens/Q3TicketxAno.png)
 
-A análise histórica da séria temporal (2011 - 2025) revela ciclos econômicos bem definidos no mercado imobiliário carioca, com dinâmicas contrastantes entre volume e tíquete médio.
+A análise histórica da série temporal (2011 - 2025) revela ciclos econômicos bem definidos no mercado imobiliário carioca, com dinâmicas contrastantes entre volume e tíquete médio.
 
 * **2011 - 2016:** No início da série estão presentes os maiores volumes transacionais da década, sendo o ápice, **38.035 transações em 2011**. Nos anos posteriores, observou-se uma **desaceleração progressiva na quantidade de negócios**, caindo para **21.171 em 2016**, enquanto o **tíquete médio anual dobrou**, saltando de **R$ 353.110,05 (2011)** para o pico histórico de **R$ 750.770,94 (2016)**. Esses valores refletem uma valorização patrimonial expressiva, que pode ser explicada por altos investimentos urbanos e grandes eventos na cidade.
 * **2017 - 2020:** Entre 2017 e 2020, o mercado enfrentou uma **contração tanto em liquidez quanto em valores médios**, atingindo o **menor volume da série em 2018 (18.758 transações)** e uma **correção no tíquete médio para valores próximos a R$ 610 mil - R$ 639 mil**.
@@ -273,14 +273,14 @@ A partir da análise, observa-se que os bairros da **Zona Oeste** lideram expres
 
 Outros bairros da Zona Oeste, como **Freguesia (Jacarepaguá)** (12.801 transações e **R$ 415.364,06**), **Taquara** (9.788 transações e **R$ 250.695,03**) e **Pechincha** (8.461 transações e **R$ 274.474,09**), além da **Tijuca** na Zona Norte (18.818 transações e **R$ 551.695,99**), apresentam volumes transacionais e valores médios mais contidos quando comparados ao topo da lista. Esses bairros atendem à demanda residencial de perfil intermediário e mais acessível da capital. 
 
-Por outro lado, os bairros tradicionais da **Zona Sul** presentes no top 10 - **Copacabana** (26.709 transações e valor médio de **R$888.378,86**), **Botafogo** (12.782 transações e **R$ 943.748,74**) e **Flamengo** (8.879 transações e **R$ 872.212,07**) - apresentam valores expressivamente maior que os demais, explicado pela alta valorização patrimonial e consolidação histórica da região.
+Por outro lado, os bairros tradicionais da **Zona Sul** presentes no top 10 - **Copacabana** (26.709 transações e valor médio de **R$888.378,86**), **Botafogo** (12.782 transações e **R$ 943.748,74**) e **Flamengo** (8.879 transações e **R$ 872.212,07**) - apresentam valores expressivamente maiores que os demais, explicado pela alta valorização patrimonial e consolidação histórica da região.
 
 #### Referência ao Script
 > **Código-fonte:** Esta consulta analítica pode ser executada na célula de código 12 do notebook [`MVP - Sprint_ Engenharia de Dados.ipynb`](./MVP%20-%20Sprint_%20Engenharia%20de%20Dados.ipynb).
 
 ## 7. Autoavaliação
 
-Ao concluir o projeto respondendo as perguntas formuladas na primeira etapa, foi possível alcançar todos os objetivos técnicos e analíticos:
+Ao concluir o projeto respondendo às perguntas formuladas na primeira etapa, foi possível alcançar todos os objetivos técnicos e analíticos:
 
 * **Desenvolvimento da Arquitetura Medalhão:** Foi implementada, de maneira totalmente funcional, a separação estrita entre as camadas **Bronze** (dados brutos e rastreabilidade), **Silver** (saneamento, tratamento e tipagem dos dados e atributos) e **Gold** (modelagem dimensional analítica para consumo).
 * **Governança via Unity Catalog:** Todas as tabelas foram organizadas sob um catálogo estruturado, persistidas em um Delta Lake e totalmente documentadas.
@@ -291,5 +291,5 @@ Em relação aos problemas e dificuldades encontradas, pode-se citar os mesmos d
 
 A fim de enriquecer o projeto futuramente, algumas iniciativas se tornam interessantes, tais quais:
 * Conectar as tabelas criadas na camada Gold (Tabela fato e dimensões) a ferramentas analíticas como Power BI, para a construção de dashboards interativos.
-* Enriquecer a base com dados externos, tais como bases georreferenciadas (estações de metrô, índices de segurança pública, etc...) para modelar ánalises preditivas de precificação de imóveis através de ML (Machine Learning).
+* Enriquecer a base com dados externos, tais como bases georreferenciadas (estações de metrô, índices de segurança pública, etc...) para modelar análises preditivas de precificação de imóveis através de ML (Machine Learning).
 * Adaptar a camada Bronze para leitura contínua e orientada a eventos (cloudFiles), processando novos arquivos de transmissão de ITBI de forma incremental sem necessidade de reprocessamento em lote (*batch overwrite*).
